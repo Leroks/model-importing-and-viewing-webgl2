@@ -20,7 +20,7 @@ var posBuffer;
 var theta = [0, 0, 0];
 var speed = 0; //speed of rotation
 
-var cameraPos = vec3(0, 5, 10); //use them for lookAt function
+var cameraPos = vec3(0, 4, 10); //use them for lookAt function
 var target = vec3(0, 0, 0);
 
 var moveCallback; //for the pointer lock api
@@ -64,6 +64,8 @@ var render = function () {
     }
 
     modelViewMatrix = lookAt(cameraPos, target, vec3(0, 1, 0));  // Compute the camera's matrix using look at.
+
+    modelViewMatrix = mult(modelViewMatrix, rotate(-45, [0, 1, 0]));
 
     modelViewMatrix = mult(modelViewMatrix, rotate(theta[1], [0, 1, 0]));
     modelViewMatrix = mult(modelViewMatrix, rotate(theta[0], [1, 0, 0]));
