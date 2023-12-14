@@ -180,43 +180,72 @@ function init() {
         render();
     });
 }
-
 function loadMeshData(string) {
-
-    var lines = string.split("\n"); //split from line
-    var p = []; //positions
-    var n = [];  //normals
+    var lines = string.split("\n");
+    var p = [];
+    var n = [];
 
     for (var i = 0; i < lines.length; i++) {
         var numbersOfline = lines[i].trimRight().split(' ');
         if (numbersOfline.length > 0) {
 
             switch (numbersOfline[0]) {
-                case 'v': //if equals v, push to the p array
+                case 'v':
                     p.push([+numbersOfline[1], +numbersOfline[2], +numbersOfline[3]]);
                     break;
-                case 'vn': //if equals vn, push to the n array
+                case 'vn':
                     n.push([+numbersOfline[1], +numbersOfline[2], +numbersOfline[3]]);
                     break;
-                case 'f':  //if equals f, push to the verticesOfShape array
-                    var f1 = numbersOfline[1].split('/');
-                    var f2 = numbersOfline[2].split('/');
-                    var f3 = numbersOfline[3].split('/');
-                    verticesOfShape.extend(p[+(f1[0]) - 1]);
-                    verticesOfShape.extend(n[+(f1[2]) - 1]);
-                    verticesOfShape.extend(p[+(f2[0]) - 1]);
-                    verticesOfShape.extend(n[+(f2[2]) - 1]);
-                    verticesOfShape.extend(p[+(f3[0]) - 1]);
-                    verticesOfShape.extend(n[+(f3[2]) - 1]);
+                case 'f':
+                    var faceVertices = [];
+                    for (var j = 1; j < numbersOfline.length; j++) {
+                        var indices = numbersOfline[j].split('/');
+                        faceVertices.push({
+                            position: p[+(indices[0]) - 1],
+                            normal: n[+(indices[2]) - 1]
+                        });
+                    }
+
+                    // Handle quads (four vertices in a face)
+                    if (faceVertices.length === 4) {
+                        verticesOfShape.extend(faceVertices[0].position);
+                        verticesOfShape.extend(faceVertices[0].normal);
+
+                        verticesOfShape.extend(faceVertices[1].position);
+                        verticesOfShape.extend(faceVertices[1].normal);
+
+                        verticesOfShape.extend(faceVertices[2].position);
+                        verticesOfShape.extend(faceVertices[2].normal);
+
+                        verticesOfShape.extend(faceVertices[0].position);
+                        verticesOfShape.extend(faceVertices[0].normal);
+
+                        verticesOfShape.extend(faceVertices[2].position);
+                        verticesOfShape.extend(faceVertices[2].normal);
+
+                        verticesOfShape.extend(faceVertices[3].position);
+                        verticesOfShape.extend(faceVertices[3].normal);
+                    } else { // Handle triangles
+                        verticesOfShape.extend(faceVertices[0].position);
+                        verticesOfShape.extend(faceVertices[0].normal);
+
+                        verticesOfShape.extend(faceVertices[1].position);
+                        verticesOfShape.extend(faceVertices[1].normal);
+
+                        verticesOfShape.extend(faceVertices[2].position);
+                        verticesOfShape.extend(faceVertices[2].normal);
+                    }
                     break;
                 default:
                     break;
             }
         }
     }
+
     vertexCount = verticesOfShape.length / 6;
     init();
 }
+
 
 Array.prototype.extend = function (other_array) {
     other_array.forEach(function (v) {
@@ -286,4 +315,3 @@ window.onload = function () {  // load a resource
     objLoader('Assets/cat.obj')
     objLoader('Assets/terrain.obj')
 }
-
