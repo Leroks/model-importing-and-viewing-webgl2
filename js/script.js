@@ -361,12 +361,12 @@ document.onkeydown = function (e) {
             target[0] += 0.14;
             break;
         case "ArrowUp":  //Use ‘ArrowUp’ key to moves to the forward with change camera pos
-            cameraPos[2] += 0.5;
-            target[2] += 0.5;
-            break;
-        case "ArrowDown": //Use ‘ArrowDown’ key to moves to the backward
             cameraPos[2] -= 0.5;
             target[2] -= 0.5;
+            break;
+        case "ArrowDown": //Use ‘ArrowDown’ key to moves to the backward
+            cameraPos[2] += 0.5;
+            target[2] += 0.5;
             break;
         case "p": //Use ‘p’ key to activate and deactivate the pointer lock api
             if (!pointerLockApi()) {
