@@ -27,7 +27,7 @@ var canvas;
 var type;
 var normalize1;
 var stride;
-var offset;
+var offset = 0;
 var program;
 
 let colorF;  //for uniform location
@@ -146,7 +146,12 @@ var render = function () {
     gl.clearColor(1.0, 1.0, 1.0, 1.0); //color the background
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
-    gl.drawArrays(gl.TRIANGLES, offset, vertexCount); //draw
+    gl.uniform4f(colorF, 0.3, 0.3, 0.3, 1);
+    gl.drawArrays(gl.TRIANGLES, 0, offset); //draw
+
+    gl.uniform4f(colorF, 0.4, 1.0, 0.4, 1);
+    gl.drawArrays(gl.TRIANGLES, offset, vertexCount - offset); //draw
+
 
     requestAnimFrame(render);
 }
@@ -221,13 +226,11 @@ function init() {
     type = gl.FLOAT;
     normalize1 = false;
     stride = Float32Array.BYTES_PER_ELEMENT * 6;
-    offset = 0;
 
     aspectRatio = canvas.width / canvas.height;
 
     gl.viewport(0, 0, canvas.width, canvas.height);
 
-    gl.clearColor(0.0, 1.0, 0.0, 1.0); //color the background
     gl.clearDepth(1.0); // Clear everything
     gl.enable(gl.DEPTH_TEST);// Enable depth testing
     gl.enable(gl.CULL_FACE);
@@ -239,12 +242,11 @@ function init() {
     posBuffer = _createBufferObject(gl, verticesOfShape); //for positions
 
     colorF = gl.getUniformLocation(program, "fColor"); //color
-    gl.uniform4f(colorF, 0.3, 0.3, 0.3, 1);
 
     const aPosition = gl.getAttribLocation(program, "pos");  // Get the location of the shader variables
     gl.bindBuffer(gl.ARRAY_BUFFER, posBuffer);      // Bind the position buffer.
     gl.enableVertexAttribArray(aPosition); // Enable the assignment to aPosition variable
-    gl.vertexAttribPointer(aPosition, 3, type, normalize1, stride, offset); // Enable the assignment to aPosition variable
+    gl.vertexAttribPointer(aPosition, 3, type, normalize1, stride, 0); // Enable the assignment to aPosition variable
 
 
     requestAnimationFrame(function () {
@@ -306,6 +308,7 @@ function loadMeshData(string) {
 
                         verticesOfShape.extend(faceVertices[2].position);
                         verticesOfShape.extend(faceVertices[2].normal);
+                        offset +=3;
                     }
                     break;
                 default:
@@ -343,15 +346,6 @@ function objLoader(filename) {
 
 document.onkeydown = function (e) {
     switch (e.key) {
-        case "+": //Use ‘+’ key to increases the rotation speed
-            speed += 0.75;
-            break;
-        case "-": //Use ‘-’ key to decrease the rotation speed
-            if (speed - 0.75 < 0)
-                speed = 0;
-            else
-                speed -= 0.75;
-            break;
         case "PageDown":  //Use ‘PageDown’ key to downward with change camera pos
             cameraPos[1] -= 0.2;
             target[1] -= 0.2;
