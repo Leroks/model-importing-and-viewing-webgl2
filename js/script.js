@@ -123,11 +123,14 @@ var render = function () {
 
     theta[1] += speed;
 
+    //Camera Rotation
     if (isM) { //for mouse movement
-        theta[0] += 0.01 * y;  //change y pos
-        theta[0] += 0.01 * y;
-        theta[1] += 0.01 * x; //change x pos
-        theta[1] += 0.01 * x;
+        theta[0] += y / 100;
+        theta[1] += x / 100;
+
+        target[0] += x / 100;
+        target[1] += y / 100;
+
         isM = false;
     }
 
