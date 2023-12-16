@@ -40,7 +40,6 @@ var vertexCount;      // verticesOfShape.length /6
 var posBuffer;
 
 var theta = [0, 0, 0];
-var speed = 0; //speed of rotation
 
 var cameraPos = vec3(0, 4, 10); //use them for lookAt function
 var target = vec3(0, 0, 0);
@@ -121,7 +120,6 @@ var render = function () {
     var projectionMatrix = perspective(60, aspectRatio, 0.1, 200);
     gl.uniformMatrix4fv(programInfo.uniformLocations.projectionMatrixLoc, false, flatten(projectionMatrix)); // Set the matrix.
 
-    theta[1] += speed;
 
     //Camera Rotation
     if (isM) { //for mouse movement
@@ -308,7 +306,7 @@ function loadMeshData(string) {
 
                         verticesOfShape.extend(faceVertices[2].position);
                         verticesOfShape.extend(faceVertices[2].normal);
-                        offset +=3;
+                        offset += 3;
                     }
                     break;
                 default:
