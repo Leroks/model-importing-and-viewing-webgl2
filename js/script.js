@@ -63,19 +63,6 @@ function _createBufferObject(gl, array) {
     return buffer;
 }
 
-function loadShader(gl, type, source) {
-    const shader = gl.createShader(type);
-
-    gl.shaderSource(shader, source);
-    gl.compileShader(shader);
-
-    if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
-        alert('An error occurred compiling the shaders: ' + gl.getShaderInfoLog(shader));
-        gl.deleteShader(shader);
-        return null;
-    }
-    return shader;
-}
 
 function initShaderProgram(gl, vsSource, fsSource) {
     const vertexShader = loadShader(gl, gl.VERTEX_SHADER, vsSource);
@@ -91,6 +78,20 @@ function initShaderProgram(gl, vsSource, fsSource) {
         return null;
     }
     return shaderProgram;
+}
+
+function loadShader(gl, type, source) {
+    const shader = gl.createShader(type);
+
+    gl.shaderSource(shader, source);
+    gl.compileShader(shader);
+
+    if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
+        alert('An error occurred compiling the shaders: ' + gl.getShaderInfoLog(shader));
+        gl.deleteShader(shader);
+        return null;
+    }
+    return shader;
 }
 
 
@@ -150,11 +151,6 @@ var render = function () {
 
 
     requestAnimFrame(render);
-}
-
-var pointerLockApi = function () {
-    return canvas ===
-        document.pointerLockElement
 }
 
 function init() {
@@ -222,6 +218,11 @@ function init() {
     requestAnimationFrame(function () {
         render();
     });
+}
+
+var pointerLockApi = function () {
+    return canvas ===
+        document.pointerLockElement
 }
 
 function loadMeshData(string) {
@@ -298,6 +299,12 @@ Array.prototype.extend = function (other_array) {
     }, this);
 }
 
+
+window.onload = function () {
+    objLoader('Assets/cat.obj')
+    objLoader('Assets/terrain.obj')
+}
+
 function objLoader(filename) {
     fetch(filename)
         .then(response => {
@@ -350,9 +357,4 @@ document.onkeydown = function (e) {
         default:
             break;
     }
-}
-
-window.onload = function () {
-    objLoader('Assets/cat.obj')
-    objLoader('Assets/terrain.obj')
 }
