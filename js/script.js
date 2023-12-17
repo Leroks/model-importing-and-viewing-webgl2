@@ -102,7 +102,6 @@ function initShaderProgram(gl, vsSource, fsSource) {
 window.requestAnimFrame = (function () {
     return window.requestAnimationFrame ||
         window.webkitRequestAnimationFrame ||
-        window.mozRequestAnimationFrame ||
         window.oRequestAnimationFrame ||
         window.msRequestAnimationFrame ||
         function (callback) {
@@ -156,9 +155,7 @@ var render = function () {
 
 var pointerLockApi = function () {
     return canvas ===
-        document.pointerLockElement ||
-        canvas ===
-        document.mozPointerLockElement;
+        document.pointerLockElement
 }
 
 function init() {
@@ -170,11 +167,10 @@ function init() {
     gl.useProgram(program);
 
     var havePointerLock = 'pointerLockElement' in document ||
-        'mozPointerLockElement' in document ||
         'webkitPointerLockElement' in document;
 
-    canvas.requestPointerLock = canvas.requestPointerLock || canvas.mozRequestPointerLock;
-    document.exitPointerLock = document.exitPointerLock || document.mozExitPointerLock;
+    canvas.requestPointerLock = canvas.requestPointerLock;
+    document.exitPointerLock = document.exitPointerLock;
 
 
     var lockChange = function () {
@@ -190,7 +186,6 @@ function init() {
     }
 
     document.addEventListener('pointerlockchange', lockChange, false);
-
 
     moveCallback = function (e) {
         isMouse = true;
