@@ -121,10 +121,13 @@ var render = function () {
     gl.uniformMatrix4fv(programInfo.uniformLocations.projectionMatrixLoc, false, flatten(projectionMatrix)); // Set the matrix.
 
 
-    //Camera Rotation with mouse
+// Camera Rotation with mouse
     if (isMouse) {
         theta[1] += mouseX / 100 * multiplier;
         theta[0] -= mouseY / 100 * multiplier;
+
+        // Limit the vertical rotation to avoid flipping
+        theta[0] = Math.max(-Math.PI / 2, Math.min(Math.PI / 2, theta[0]));
 
         target[0] += mouseX / 100 + adder;
         target[1] -= mouseY / 100 + adder;
