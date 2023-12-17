@@ -30,6 +30,8 @@ var normalizeIt;
 var stride;
 var offset = 0;
 var program;
+var multiplier = 1;
+var adder = 0;
 
 let uniformColorLoc;
 var modelViewMatrix;
@@ -60,8 +62,8 @@ function _createBufferObject(gl, array) {
         return null;
     }
 
-    gl.bindBuffer(gl.ARRAY_BUFFER, buffer); //Make the buffer object the active buffer
-    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(array), gl.STATIC_DRAW);// Upload the data for this buffer object
+    gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(array), gl.STATIC_DRAW);
 
     return buffer;
 }
@@ -109,8 +111,6 @@ window.requestAnimFrame = (function () {
 })();
 
 var render = function () {
-
-    // look up uniform locations.
     const programInfo = {
         uniformLocations: {
             projectionMatrixLoc: gl.getUniformLocation(program, "projectionMatrix"),
@@ -124,11 +124,11 @@ var render = function () {
 
     //Camera Rotation with mouse
     if (isMouse) {
-        theta[0] += mouseY / 100;
-        theta[1] += mouseX / 100;
+        theta[1] += mouseX / 100 * multiplier;
+        theta[0] -= mouseY / 100 * multiplier;
 
-        target[0] += mouseX / 100;
-        target[1] += mouseY / 100;
+        target[0] += mouseX / 100 + adder;
+        target[1] -= mouseY / 100 + adder;
 
         isMouse = false;
     }
@@ -163,13 +163,8 @@ var pointerLockApi = function () {
 
 function init() {
 
-    canvas = document.querySelector("#glcanvas");
+    canvas = document.querySelector("#canvas");
     gl = canvas.getContext("webgl2");
-
-    if (!gl) {
-        alert("WebGL 2.0 is not available.");
-        return;
-    }
 
     program = initShaderProgram(gl, vsSource, fsSource);
     gl.useProgram(program);
@@ -195,17 +190,14 @@ function init() {
     }
 
     document.addEventListener('pointerlockchange', lockChange, false);
-    document.addEventListener('mozpointerlockchange', lockChange, false);
 
 
     moveCallback = function (e) {
         isMouse = true;
         var movementX = e.movementX ||
-            e.mozMovementX ||
             e.webkitMovementX || 0;
 
         var movementY = e.movementY ||
-            e.mozMovementY ||
             e.webkitMovementY || 0;
         mouseX = movementX;
         mouseY = movementY;
@@ -335,28 +327,28 @@ function objLoader(filename) {
 document.onkeydown = function (e) {
     switch (e.key) {
         case "PageDown":
-            cameraPos[1] -= 0.2;
-            target[1] -= 0.2;
+            cameraPos[1] -= 0.25;
+            target[1] -= 0.25;
             break;
         case "PageUp":
-            cameraPos[1] += 0.2;
-            target[1] += 0.2;
+            cameraPos[1] += 0.25;
+            target[1] += 0.25;
             break;
         case "ArrowLeft":
-            cameraPos[0] -= 0.14;
-            target[0] -= 0.14;
+            cameraPos[0] -= 0.15;
+            target[0] -= 0.15;
             break;
         case "ArrowRight":
-            cameraPos[0] += 0.14;
-            target[0] += 0.14;
+            cameraPos[0] += 0.15;
+            target[0] += 0.15;
             break;
         case "ArrowUp":
-            cameraPos[2] += 0.55;
-            target[2] += 0.55;
-            break;
-        case "ArrowDown":
             cameraPos[2] -= 0.55;
             target[2] -= 0.55;
+            break;
+        case "ArrowDown":
+            cameraPos[2] += 0.55;
+            target[2] += 0.55;
             break;
         case "p":
             if (!pointerLockApi()) {
