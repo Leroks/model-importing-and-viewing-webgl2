@@ -36,7 +36,7 @@ var adder = 0;
 let uniformColorLoc;
 var modelViewMatrix;
 
-let aspectRatio;
+let aspectRatio = 1
 
 var verticesOfShape = [];
 var vertexCount;
