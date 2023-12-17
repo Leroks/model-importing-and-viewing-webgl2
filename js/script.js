@@ -3,22 +3,22 @@ const vsSource = `#version 300 es
     uniform mat4 projectionMatrix;
     uniform mat4 mvMatrix;
     uniform vec4 vColor;
-    out vec4 fColor;
+    out vec4 fragmentColor;
     
     void main() 
     {
         gl_Position =  projectionMatrix  * mvMatrix * pos;
-        fColor = vColor;
+        fragmentColor = vColor;
     }
 `;
 const fsSource = `#version 300 es
     precision mediump float;
-    uniform vec4 fColor;
+    uniform vec4 fragmentColor;
     out vec4 fragColor;
     
     void main() 
     {
-        fragColor = fColor;
+        fragColor = fragmentColor;
     }
 `;
 
@@ -145,7 +145,7 @@ var render = function () {
     gl.uniform4f(uniformColorLoc, 0.50, 1.0, 0.50, 1);
     gl.drawArrays(gl.TRIANGLES, offset, vertexCount - offset);
 
-    gl.uniform4f(uniformColorLoc, 0.3, 0.3, 0.3, 1);
+    gl.uniform4f(uniformColorLoc, 0.4, 0.4, 0.4, 1);
     gl.drawArrays(gl.TRIANGLES, 0, offset);
 
 
@@ -211,7 +211,7 @@ function init() {
 
     posBuffer = _createBufferObject(gl, verticesOfShape);
 
-    uniformColorLoc = gl.getUniformLocation(program, "fColor");
+    uniformColorLoc = gl.getUniformLocation(program, "fragmentColor");
 
     const aPosition = gl.getAttribLocation(program, "pos");
     gl.bindBuffer(gl.ARRAY_BUFFER, posBuffer);
