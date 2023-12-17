@@ -57,11 +57,6 @@ function _createBufferObject(gl, array) {
 
     const buffer = gl.createBuffer();
 
-    if (!buffer) {
-        out.displayError('Failed to create the buffer object for ' + model.name);
-        return null;
-    }
-
     gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
     gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(array), gl.STATIC_DRAW);
 
@@ -147,11 +142,12 @@ var render = function () {
     gl.clearColor(1.0, 1.0, 1.0, 1.0);
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
+    gl.uniform4f(uniformColorLoc, 0.50, 1.0, 0.50, 1);
+    gl.drawArrays(gl.TRIANGLES, offset, vertexCount - offset);
+
     gl.uniform4f(uniformColorLoc, 0.3, 0.3, 0.3, 1);
     gl.drawArrays(gl.TRIANGLES, 0, offset);
 
-    gl.uniform4f(uniformColorLoc, 0.4, 1.0, 0.4, 1);
-    gl.drawArrays(gl.TRIANGLES, offset, vertexCount - offset);
 
     requestAnimFrame(render);
 }
@@ -171,9 +167,6 @@ function init() {
 
     var havePointerLock = 'pointerLockElement' in document ||
         'webkitPointerLockElement' in document;
-
-    canvas.requestPointerLock = canvas.requestPointerLock;
-    document.exitPointerLock = document.exitPointerLock;
 
 
     var lockChange = function () {
@@ -215,7 +208,6 @@ function init() {
     gl.depthFunc(gl.LEQUAL);
     gl.cullFace(gl.BACK);
     gl.cullFace(gl.CCW);
-    gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
     posBuffer = _createBufferObject(gl, verticesOfShape);
 
